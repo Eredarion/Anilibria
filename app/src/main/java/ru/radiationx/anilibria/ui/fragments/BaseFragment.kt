@@ -7,11 +7,14 @@ import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.support.annotation.LayoutRes
 import android.support.design.widget.CollapsingToolbarLayout
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.text.Html
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import com.arellomobile.mvp.MvpAppCompatFragment
 import io.reactivex.Single
@@ -24,6 +27,8 @@ import ru.radiationx.anilibria.R
 import ru.radiationx.anilibria.ui.activities.main.IntentActivity
 import ru.radiationx.anilibria.ui.common.BackButtonListener
 import ru.radiationx.anilibria.utils.DimensionHelper
+import ru.radiationx.anilibria.utils.LinkMovementMethod
+import ru.radiationx.anilibria.utils.Utils
 
 /* Created by radiationx on 18.11.17. */
 
@@ -58,8 +63,20 @@ abstract class BaseFragment : MvpAppCompatFragment(), BackButtonListener {
         backupInfo?.setOnClickListener {
             context?.let {
                 val text = """В бекапе будет содержаться локальная история просмотра релизов и серий, а так-же временные метки просмотра серий.<br><br>Необходимо установить новую версию приложения: <a href="https://www.anilibria.tv/all/app/">на сайте</a> или <a href="https://play.google.com/store/apps/details?id=ru.radiationx.anilibria.app">Play Market</a>.<br><br><b>Эта версия программы больше не поддерживается и обновляться не будет.</b>"""
+
+                val textview = TextView(it)
+                textview.movementMethod = LinkMovementMethod({
+                    Utils.externalLink(it)
+                    return@LinkMovementMethod true
+                })
+                textview.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                textview.text = Html.fromHtml(text)
+                val padding = (it.resources.displayMetrics.density * 16).toInt()
+                textview.setPadding(padding, padding, padding, padding)
+                textview.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                textview.setTextColor(ContextCompat.getColor(it, R.color.textDefault))
                 AlertDialog.Builder(it)
-                        .setMessage(Html.fromHtml(text))
+                        .setView(textview)
                         .setPositiveButton("Ок, ясно", null)
                         .show()
             }
