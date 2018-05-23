@@ -43,4 +43,16 @@
         android:background="@color/white"
         android:overScrollMode="never"
         android:transitionGroup="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:clickable="false"
+        android:fontFamily="@font/medium"
+        android:gravity="center_horizontal"
+        android:text="App status: EOL"
+        android:textColor="#75ffffff"
+        android:textSize="12sp" />
 </RelativeLayout>

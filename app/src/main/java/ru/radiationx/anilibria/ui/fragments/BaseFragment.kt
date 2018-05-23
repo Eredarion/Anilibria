@@ -8,6 +8,7 @@ import android.support.annotation.CallSuper
 import android.support.annotation.LayoutRes
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.v7.app.AlertDialog
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,8 +57,9 @@ abstract class BaseFragment : MvpAppCompatFragment(), BackButtonListener {
 
         backupInfo?.setOnClickListener {
             context?.let {
+                val text = """В бекапе будет содержаться локальная история просмотра релизов и серий, а так-же временные метки просмотра серий.<br><br>Необходимо установить новую версию приложения: <a href="https://www.anilibria.tv/all/app/">на сайте</a> или <a href="https://play.google.com/store/apps/details?id=ru.radiationx.anilibria.app">Play Market</a>.<br><br><b>Эта версия программы больше не поддерживается и обновляться не будет.</b>"""
                 AlertDialog.Builder(it)
-                        .setMessage("В бекапе будет содержаться локальная история просмотра релизов и серий, а так-же временные метки просмотра серий.\n\nНеобходимо установить новую версию приложения. Новая версия будет доступна на сайте и в Play Market. Приложение будет иметь название \"AniLibria App\"")
+                        .setMessage(Html.fromHtml(text))
                         .setPositiveButton("Ок, ясно", null)
                         .show()
             }

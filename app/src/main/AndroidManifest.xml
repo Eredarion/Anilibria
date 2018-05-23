@@ -27,7 +27,6 @@
         <activity android:name=".ui.activities.main.IntentActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-                <action android:name="anilibria.app.RESTORE" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -44,10 +43,6 @@
                 <data
                     android:host="www.anilibria.tv"
                     android:scheme="https" />
-
-                <data
-                    android:host="anilibria.app"
-                    android:scheme="app" />
             </intent-filter>
         </activity>
 
