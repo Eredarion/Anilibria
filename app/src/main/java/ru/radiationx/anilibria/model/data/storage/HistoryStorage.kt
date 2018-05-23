@@ -25,6 +25,8 @@ class HistoryStorage(private val sharedPreferences: SharedPreferences) : History
         loadAll()
     }
 
+    override fun getReleases(): List<ReleaseItem> = localReleases.toList()
+
     override fun observeEpisodes(): Observable<MutableList<ReleaseItem>> = localReleasesRelay
 
     override fun putRelease(release: ReleaseItem) {

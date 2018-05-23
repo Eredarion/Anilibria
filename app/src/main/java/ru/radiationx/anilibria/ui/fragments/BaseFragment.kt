@@ -1,18 +1,26 @@
 package ru.radiationx.anilibria.ui.fragments
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.support.annotation.LayoutRes
 import android.support.design.widget.CollapsingToolbarLayout
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.arellomobile.mvp.MvpAppCompatFragment
+import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_main_base.*
+import org.json.JSONArray
+import org.json.JSONObject
 import ru.radiationx.anilibria.App
 import ru.radiationx.anilibria.R
+import ru.radiationx.anilibria.ui.activities.main.IntentActivity
 import ru.radiationx.anilibria.ui.common.BackButtonListener
 import ru.radiationx.anilibria.utils.DimensionHelper
 
@@ -45,7 +53,76 @@ abstract class BaseFragment : MvpAppCompatFragment(), BackButtonListener {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && needToolbarShadow) {
             toolbar_shadow_prelp?.visibility = View.VISIBLE
         }
+
+        backupInfo?.setOnClickListener {
+            context?.let {
+                AlertDialog.Builder(it)
+                        .setMessage("В бекапе будет содержаться локальная история просмотра релизов и серий, а так-же временные метки просмотра серий.\n\nНеобходимо установить новую версию приложения. Новая версия будет доступна на сайте и в Play Market. Приложение будет иметь название \"AniLibria App\"")
+                        .setPositiveButton("Ок, ясно", null)
+                        .show()
+            }
+        }
+
+        backupAction?.setOnClickListener {
+            doBackup()
+        }
     }
+
+    private fun doBackup() {
+        val schedulers = App.injections.schedulers
+        Single
+                .fromCallable { backupAsyncPart() }
+                .subscribeOn(schedulers.io())
+                .observeOn(schedulers.ui())
+                .subscribe({ json ->
+                    val intent = Intent(IntentActivity.ACTION_RESTORE, Uri.parse("app://anilibria.app")).apply {
+                        putExtra(IntentActivity.KEY_RESTORE, json.toString())
+                    }.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    App.instance.applicationContext.startActivity(Intent.createChooser(intent, "Восстановить бекап в").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                }, {
+                    it.printStackTrace()
+                    Toast.makeText(App.instance.applicationContext, "Ошибка при бекапе: $it", Toast.LENGTH_SHORT).show()
+                })
+
+    }
+
+    private fun backupAsyncPart(): JSONObject {
+        val jsonReleases = JSONArray()
+        App.injections.historyStorage.getReleases().forEach {
+            jsonReleases.put(JSONObject().apply {
+                put("id", it.id)
+                put("idName", it.idName)
+                put("title", it.title)
+                put("originalTitle", it.originalTitle)
+                put("torrentLink", it.torrentLink)
+                put("link", it.link)
+                put("image", it.image)
+                put("episodesCount", it.episodesCount)
+                put("description", it.description)
+                put("seasons", JSONArray(it.seasons))
+                put("voices", JSONArray(it.voices))
+                put("genres", JSONArray(it.genres))
+                put("types", JSONArray(it.types))
+            })
+        }
+
+        val jsonEpisodes = JSONArray()
+        App.injections.episodesCheckerStorage.getEpisodes().forEach {
+            jsonEpisodes.put(JSONObject().apply {
+                put("releaseId", it.releaseId)
+                put("id", it.id)
+                put("seek", it.seek)
+                put("isViewed", it.isViewed)
+                put("lastAccess", it.lastAccess)
+            })
+        }
+
+        return JSONObject().apply {
+            put("releases", jsonReleases.toString())
+            put("episodes", jsonEpisodes.toString())
+        }
+    }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

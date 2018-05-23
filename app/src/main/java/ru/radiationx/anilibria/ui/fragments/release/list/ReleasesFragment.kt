@@ -1,9 +1,12 @@
 package ru.radiationx.anilibria.ui.fragments.release.list
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -16,6 +19,7 @@ import ru.radiationx.anilibria.entity.app.release.ReleaseItem
 import ru.radiationx.anilibria.entity.app.vital.VitalItem
 import ru.radiationx.anilibria.presentation.release.list.ReleasesPresenter
 import ru.radiationx.anilibria.presentation.release.list.ReleasesView
+import ru.radiationx.anilibria.ui.activities.main.IntentActivity
 import ru.radiationx.anilibria.ui.adapters.PlaceholderListItem
 import ru.radiationx.anilibria.ui.common.RouterProvider
 import ru.radiationx.anilibria.ui.fragments.BaseFragment
@@ -70,14 +74,13 @@ class ReleasesFragment : BaseFragment(), SharedProvider, ReleasesView, ReleasesA
 
         toolbar.apply {
             title = getString(R.string.fragment_title_releases)
-            /*menu.add("Поиск")
+            menu.add("Поиск")
                     .setIcon(R.drawable.ic_toolbar_search)
                     .setOnMenuItemClickListener({
-                        presenter.openSearch()
-                        //Toast.makeText(context, "Временно не поддерживается", Toast.LENGTH_SHORT).show()
+
                         false
                     })
-                    .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)*/
+                    .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
         }
     }
 

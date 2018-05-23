@@ -5,5 +5,6 @@ import ru.radiationx.anilibria.entity.app.release.ReleaseItem
 
 interface HistoryHolder {
     fun observeEpisodes(): Observable<MutableList<ReleaseItem>>
+    fun getReleases(): List<ReleaseItem>
     fun putRelease(release: ReleaseItem)
 }

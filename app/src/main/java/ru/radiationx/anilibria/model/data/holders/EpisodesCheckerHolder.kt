@@ -5,6 +5,7 @@ import ru.radiationx.anilibria.entity.app.release.ReleaseFull
 
 interface EpisodesCheckerHolder {
     fun observeEpisodes(): Observable<MutableList<ReleaseFull.Episode>>
-    fun putEpisode(episode: ReleaseFull.Episode)
+    fun getEpisodes(): List<ReleaseFull.Episode>
     fun getEpisodes(releaseId: Int): List<ReleaseFull.Episode>
+    fun putEpisode(episode: ReleaseFull.Episode)
 }

@@ -24,6 +24,8 @@ class EpisodesCheckerStorage(private val sharedPreferences: SharedPreferences) :
         loadAll()
     }
 
+    override fun getEpisodes(): List<ReleaseFull.Episode> = localEpisodes.toList()
+
     override fun observeEpisodes(): Observable<MutableList<ReleaseFull.Episode>> = localEpisodesRelay
 
     override fun putEpisode(episode: ReleaseFull.Episode) {

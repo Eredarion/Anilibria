@@ -44,6 +44,8 @@ import java.nio.charset.Charset
 /*  Created by radiationx on 05.11.17. */
 class App : Application() {
     companion object {
+        const val OLD_ID = "ru.radiationx.anilibria"
+        const val NEW_ID = "ru.radiationx.anilibria.app"
 
         init {
             //AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
